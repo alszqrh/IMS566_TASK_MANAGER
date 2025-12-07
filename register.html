@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    
+    <style>
+        :root {
+            --sage: #9caf88;
+            --sage-dark: #697964;
+            --sage-light: #d4e2c7;
+        }
+        
+        body {
+            background-image: url('img/bg-wallpaper.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #E3E9DD;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .register-container {
+            max-width: 450px;
+            margin: 50px auto;
+            background-color: rgba(255, 255, 255, 0.98);
+            padding: 40px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .register-header h2 {
+            color: var(--sage);
+            font-weight: bold;
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .register-header p {
+            color: var(--sage-dark);
+            margin: 10px 0 0 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--sage-dark);
+        }
+        
+        .input-group-text {
+            background-color: var(--sage-light);
+            border: 1px solid var(--sage);
+            color: var(--sage-dark);
+        }
+        
+        .form-control {
+            padding: 12px;
+            border: 2px solid #B8BEA4;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--sage);
+            box-shadow: 0 0 0 0.13rem var(--sage-light);
+        }
+        
+        .btn-register {
+            width: 100%;
+            background: linear-gradient(135deg, var(--sage), var(--sage-dark));
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(156, 175, 136, 0.4);
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(156, 175, 136, 0.6);
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .text-sage {
+            color: var(--sage);
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .text-sage:hover {
+            color: var(--sage-dark);
+            text-decoration: underline;
+        }
+        
+        .demo-info {
+            background: linear-gradient(135deg, var(--sage-light), #f8f9fa);
+            border: 1px solid var(--sage);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .demo-info h6 {
+            color: var(--sage-dark);
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .demo-creds {
+            background: white;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: var(--sage-dark);
+        }
+        
+        @media (max-width: 576px) {
+            .register-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <h2><i class="bi bi-person-plus"></i> Create Account</h2>
+            <p>Join Task Manager today!</p>
+        </div>
+
+        <!-- Demo Credentials Info -->
+        <div class="demo-info">
+            <h6>Demo Admin Account</h6>
+            <div class="demo-creds">Username: admin</div>
+            <div class="demo-creds">Password: admin123</div>
+        </div>
+
+        <!-- Messages Container -->
+        <div id="messages"></div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Full Name:</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                    <input type="text" class="form-control" name="full_name" id="full_name" placeholder="Enter your full name" required autofocus>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Username:</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input type="text" class="form-control" name="username" id="username" placeholder="Enter username (min 3 characters)" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Password:</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter password (min 6 characters)" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm Password:</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="Re-enter password" required>
+                </div>
+            </div>
+
+            <button type="submit" name="register" class="btn-register">
+                <i class="bi bi-check-lg"></i> Create Account
+            </button>
+        </form>
+
+        <div class="login-link">
+            <p class="text-muted">Already have an account? <a href="index.html" class="text-sage">Login here</a></p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Demo user database (simulates tbl_users table)
+        let demoUsers = [
+            { username: 'admin', full_name: 'Administrator', password: '21232f297a57a5a743894a0e4a801fc3' } // md5('admin123')
+        ];
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const messages = document.getElementById('messages');
+            const formData = new FormData(this);
+            const username = document.getElementById('username').value.trim();
+            const full_name = document.getElementById('full_name').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm_password = document.getElementById('confirm_password').value;
+            
+            // Clear previous messages
+            messages.innerHTML = '';
+            
+            // Validation (exact PHP logic)
+            if (!username || !full_name || !password || !confirm_password) {
+                showMessage('All fields are required!', 'danger');
+                return;
+            }
+            
+            if (username.length < 3) {
+                showMessage('Username must be at least 3 characters!', 'danger');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('Password must be at least 6 characters!', 'danger');
+                return;
+            }
+            
+            if (password !== confirm_password) {
+                showMessage('Passwords do not match!', 'danger');
+                return;
+            }
+            
+            // Check if username exists
+            const existingUser = demoUsers.find(user => user.username === username);
+            if (existingUser) {
+                showMessage('Username already exists! Please choose another.', 'danger');
+                return;
+            }
+            
+            // Simulate MD5 hash (using simple hash for demo)
+            const hashed_password = btoa(username + password + Date.now()).slice(0, 32);
+            
+            // Add new user
+            demoUsers.push({
+                username: username,
+                full_name: full_name,
+                password: hashed_password,
+                role: 'user'
+            });
+            
+            // Success
+            showMessage(`Registration successful! You can now login with username: <strong>${username}</strong>`, 'success');
+            
+            // Clear form
+            this.reset();
+        });
+        
+        function showMessage(message, type) {
+            const messages = document.getElementById('messages');
+            messages.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        }
+        
+        // Real-time password match validation
+        document.getElementById('confirm_password').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirm = this.value;
+            
+            if (confirm && password !== confirm) {
+                this.setCustomValidity('Passwords do not match');
+                this.style.borderColor = '#dc3545';
+            } else {
+                this.setCustomValidity('');
+                this.style.borderColor = '#B8BEA4';
+            }
+        });
+    </script>
+</body>
+</html>

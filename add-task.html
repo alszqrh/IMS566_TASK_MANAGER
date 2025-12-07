@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - Add Task</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    <link rel="manifest" href="img/site.webmanifest">
+
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #E3E9DD;
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar Styling */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: #2c3e50;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            position: relative;
+            padding: 30px 20px;
+            text-align: center;
+            background-color: #1e3a52;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header .profile-picture {
+            width: 80px;
+            height: 80px;
+            background-color: #E3E9DD;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #B8BEA4;
+        }
+
+        .sidebar-header .profile-picture i {
+            font-size: 3.5rem;
+            color: #2c3e50;
+        }
+
+        .sidebar-header .profile-picture img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .sidebar-header h4 {
+            color: white;
+            font-size: 1.1rem;
+            margin: 10px 0 5px 0;
+            font-weight: 600;
+        }
+
+        .sidebar-header .user-role {
+            color: #95a5a6;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .sidebar-menu li {
+            margin: 5px 0;
+        }
+        
+        .sidebar-menu a {
+            display: block;
+            padding: 15px 25px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: #34495e;
+            padding-left: 30px;
+            color: white;
+        }
+        
+        .sidebar-menu a.active {
+            background-color: #B8BEA4;
+            color: #2c3e50;
+            font-weight: bold;
+            border-left: 4px solid #848484;
+        }
+
+       .sidebar-footer {
+            position: relative;
+            width: 100%;
+            padding: 20px;
+            background-color: #34495e;
+            margin-top: 20px;
+        }
+        
+        .sidebar-footer .user-info {
+            color: white;
+            text-align: center;
+            padding: 10px;
+            background-color: #2c3e50;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .logout-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #e74c3c;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: #c0392b;
+            color: white;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #848484, #B8BEA4);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .page-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        /* Form Card */
+        .form-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .form-card h3 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #B8BEA4;
+        }
+        
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-control, .form-select {
+            padding: 12px;
+            border: 2px solid #B8BEA4;
+            border-radius: 5px;
+            width: 100%;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #848484;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(184, 190, 164, 0.25);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Buttons */
+        .btn-submit {
+            background-color: #B8BEA4;
+            color: black;
+            font-weight: 600;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit:hover {
+            background-color: #848484;
+            color: white;
+        }
+        
+        .btn-cancel {
+            background-color: #95a5a6;
+            color: white;
+            font-weight: 600;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #7f8c8d;
+            color: white;
+        }
+        
+        /* Mobile Toggle */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+                transition: left 0.3s;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .form-card {
+                padding: 25px;
+            }
+            
+            .btn-submit, .btn-cancel {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+
+        /* Dark Mode Toggle Button */
+        .dark-mode-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.2), rgba(241, 196, 15, 0.2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-mode-toggle:hover {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.3), rgba(241, 196, 15, 0.3));
+            transform: rotate(15deg) scale(1.1);
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        }
+
+        .dark-mode-toggle i {
+            color: #f39c12;
+            font-size: 1.2rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Dark Mode Styles with Gradients */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            transition: background 0.5s ease;
+        }
+
+        body.dark-mode .main-content {
+            background: transparent;
+        }
+
+        body.dark-mode .page-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .stat-card {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .stat-card:hover {
+            background: linear-gradient(135deg, #34495e 0%, #3d5a6b 100%);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.2);
+            transform: translateY(-8px);
+        }
+
+        body.dark-mode .stat-card .icon {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .stat-card h3 {
+            color: #ecf0f1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .stat-card p {
+            color: #bdc3c7;
+        }
+
+        body.dark-mode .chart-card {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .chart-card h3 {
+            color: #ecf0f1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .table {
+            color: #ecf0f1;
+            background-color: transparent;
+        }
+
+        body.dark-mode .table thead {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .table-hover tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .table-hover tbody tr:hover {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            transform: scale(1.01);
+        }
+
+        body.dark-mode .text-muted {
+            color: #95a5a6 !important;
+        }
+
+        /* Dark Mode Sidebar */
+        body.dark-mode .sidebar {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .sidebar-header {
+            background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+            border-bottom: 2px solid rgba(184, 190, 164, 0.2);
+        }
+
+        body.dark-mode .sidebar-menu a {
+            color: #ecf0f1;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .sidebar-menu a:hover {
+            background: linear-gradient(90deg, rgba(52, 73, 94, 0.5) 0%, rgba(52, 73, 94, 0.8) 100%);
+        }
+
+        body.dark-mode .sidebar-menu a.active {
+            background: linear-gradient(90deg, #B8BEA4 0%, #a0a68d 100%);
+            color: #1a1a2e;
+            box-shadow: 0 2px 8px rgba(184, 190, 164, 0.3);
+        }
+
+        body.dark-mode .sidebar-footer {
+            background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .logout-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+
+        body.dark-mode .logout-btn:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+            box-shadow: 0 6px 16px rgba(231, 76, 60, 0.5);
+        }
+
+        /* Dark Mode Profile Picture Border */
+        body.dark-mode .sidebar-header .profile-picture {
+            border: 3px solid rgba(184, 190, 164, 0.5);
+            box-shadow: 0 4px 12px rgba(184, 190, 164, 0.2);
+        }
+
+        /* Dark Mode Toggle Icon Change */
+        body.dark-mode .dark-mode-toggle {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.3), rgba(243, 156, 18, 0.3));
+        }
+
+        body.dark-mode .dark-mode-toggle i {
+            color: #f1c40f;
+        }
+
+        /* Smooth Transitions */
+        body, .sidebar, .main-content, .stat-card, .chart-card, .table-hover tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .form-card {
+            background: linear-gradient(135deg, 
+                #1e3a52 0%, 
+                #243b53 25%, 
+                #2c3e50 50%, 
+                #34495e 75%, 
+                #2c3e50 100%);
+            color: #ecf0f1;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 60px rgba(52, 152, 219, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated gradient overlay */
+        body.dark-mode .form-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(52, 152, 219, 0.1),
+                transparent
+            );
+            animation: shimmer 3s infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        body.dark-mode .form-card h3 {
+            color: #ecf0f1;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid;
+            border-image: linear-gradient(90deg, #B8BEA4, #3498db, #B8BEA4) 1;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        body.dark-mode .form-label {
+            color: #ecf0f1;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        body.dark-mode .form-control,
+        body.dark-mode .form-select {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+            border: 2px solid rgba(184, 190, 164, 0.3);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        body.dark-mode .form-control:focus,
+        body.dark-mode .form-select:focus {
+            background: linear-gradient(135deg, #34495e 0%, #3d5a6b 100%);
+            color: #ecf0f1;
+            border-color: #B8BEA4;
+            box-shadow: 
+                0 0 0 0.3rem rgba(184, 190, 164, 0.3),
+                inset 0 2px 4px rgba(0, 0, 0, 0.2),
+                0 4px 12px rgba(184, 190, 164, 0.2);
+            animation: glow 1.5s infinite alternate;
+        }
+
+        /* Glowing input effect */
+        @keyframes glow {
+            from {
+                box-shadow: 
+                    0 0 5px rgba(184, 190, 164, 0.3),
+                    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            to {
+                box-shadow: 
+                    0 0 20px rgba(184, 190, 164, 0.5),
+                    0 0 30px rgba(52, 152, 219, 0.2),
+                    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        body.dark-mode .btn-submit {
+            background: linear-gradient(135deg, #B8BEA4 0%, #a0a68d 50%, #8a8e77 100%);
+            color: #1a1a2e;
+            font-weight: 700;
+            padding: 14px 35px;
+            border-radius: 12px;
+            box-shadow: 
+                0 4px 15px rgba(184, 190, 164, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        body.dark-mode .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+            z-index: -1;
+        }
+
+        body.dark-mode .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        body.dark-mode .btn-submit:hover {
+            background: linear-gradient(135deg, #a0a68d 0%, #8a8e77 50%, #74785f 100%);
+            box-shadow: 
+                0 6px 25px rgba(184, 190, 164, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        body.dark-mode .btn-cancel {
+            background: linear-gradient(135deg, #5d6d7e 0%, #7f8c8d 50%, #95a5a6 100%);
+            color: white;
+            font-weight: 700;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(127, 140, 141, 0.4);
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .btn-cancel:hover {
+            background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 50%, #a8b4b5 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(127, 140, 141, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Dark Mode - Select Dropdown Options */
+        body.dark-mode .form-select option {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px;
+        }
+
+        body.dark-mode .form-select option:hover {
+            background-color: #34495e;
+        }
+
+        body.dark-mode .form-select option:checked {
+            background: linear-gradient(135deg, #B8BEA4 0%, #a0a68d 100%);
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
+        /* Dark Mode - Date Input */
+        body.dark-mode input[type="date"] {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+            color-scheme: dark;
+        }
+
+        body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+    
+    <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="profile-picture">
+            <img src="img/profile.jpg" alt="Profile">
+        </div>
+        <h4>Admin</h4>
+        <p class="user-role">Software Engineer</p>
+    </div>
+                
+        <ul class="sidebar-menu">
+            <li>
+                <a href="index.html">
+                    <i class="bi bi-clipboard2-data-fill"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="add-task.html" class="active">
+                    <i class="bi bi-plus-lg"></i> Add Task
+                </a>
+            </li>
+            <li>
+                <a href="todo.html">
+                    <i class="bi bi-pin"></i> To Do
+                </a>
+            </li>
+            <li>
+                <a href="doing.html">
+                    <i class="bi bi-lightning"></i> Doing
+                </a>
+            </li>
+            <li>
+                <a href="done.html">
+                    <i class="bi bi-check2-square"></i> Done
+                </a>
+            </li>
+            <li>
+                <a href="manage-list.html">
+                    <i class="bi bi-folder2-open"></i> Manage Lists
+                </a>
+            </li>
+            <li>
+                <a href="users.html">
+                <i class="bi bi-people"></i> Lists of Users
+                </a>
+            </li>
+        </ul>
+
+            <div class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+            <i class="bi bi-moon-stars-fill" id="darkModeIcon"></i>
+        </div> 
+
+        <div class="sidebar-footer">
+            <a href="logout.html" class="logout-btn">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+
+    </div>
+    
+    <div class="main-content">
+        
+        <div class="page-header">
+            <h1><i class="bi bi-plus-lg"></i> Add New Task</h1>
+            <p class="mb-0">Create a new task and set its details</p>
+        </div>
+        
+        <div class="form-card">
+            <h3><i class="bi bi-plus-circle"></i> Task Information</h3>
+            
+            <form method="POST" action="#">
+                <div class="form-group">
+                    <label class="form-label">Task Name *</label>
+                    <input type="text" name="task_name" class="form-control" placeholder="Enter task name" required/>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Task Description</label>
+                    <textarea name="task_description" class="form-control" placeholder="Enter task description"></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Priority *</label>
+                            <select name="priority" class="form-select">
+                                <option value="Low">&#x1F7E2; Low</option>       
+                                <option value="Medium" selected>&#x1F7E1; Medium</option> 
+                                <option value="High">&#x1F534; High</option>    
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Status *</label>
+                            <select name="status" class="form-select">
+                                <option value="To Do" selected>&#x1F4CC; To Do</option>  
+                                <option value="Doing">&#x26A1; Doing</option>           
+                                <option value="Done">&#x2705; Done</option>             
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Deadline *</label>
+                            <input type="date" name="deadline" class="form-control" required/>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">List (Optional)</label>
+                            <select name="list_id" class="form-select">
+                                <option value="">Select List (Optional)</option>
+                                <option value="1">Personal</option>
+                                <option value="2">Work</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <button type="submit" name="submit" class="btn-submit">
+                        <i class="bi bi-save2"></i> SAVE TASK
+                    </button>
+                    <a href="index.php" class="btn-cancel">
+                        <i class="bi bi-x-circle"></i> CANCEL
+                    </a>
+                </div>
+
+            </form>
+        </div>
+        
+        <div class="text-center mt-4">
+            <p class="text-muted">© 2025 Task Manager System. All rights reserved.</p>
+        </div>
+        
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        
+        document.addEventListener('click', function(event) {
+            var sidebar = document.getElementById('sidebar');
+            var toggle = document.querySelector('.mobile-toggle');
+            
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+    </script>
+
+    <script>
+        (function() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'enabled') {
+                document.body.classList.add('dark-mode');
+            }
+        })();
+    </script>
+    
+    <script src="js/darkmode.js"></script>
+</body>
+</html>

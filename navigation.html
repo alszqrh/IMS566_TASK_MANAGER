@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager Navigation</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #E3E9DD;
+            overflow-x: hidden;
+        }
+        
+        /* Mobile Toggle */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: #2c3e50;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: left 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+            background-color: #1e3a52;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header .profile-picture {
+            width: 80px;
+            height: 80px;
+            background-color: #E3E9DD;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #B8BEA4;
+        }
+        
+        .sidebar-header .profile-picture i {
+            font-size: 3.5rem;
+            color: #2c3e50;
+        }
+        
+        .sidebar-header h4 {
+            color: white;
+            font-size: 1.1rem;
+            margin: 10px 0 5px 0;
+            font-weight: 600;
+        }
+        
+        .sidebar-header .user-role {
+            color: #95a5a6;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .sidebar-menu li {
+            margin: 5px 0;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: #34495e;
+            padding-left: 30px;
+            color: white;
+        }
+        
+        .sidebar-menu a.active {
+            background-color: #B8BEA4;
+            color: #2c3e50;
+            font-weight: bold;
+            border-left: 4px solid #848484;
+        }
+        
+        .sidebar-menu a i {
+            margin-right: 12px;
+            width: 20px;
+            font-size: 1.1rem;
+        }
+        
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.2), rgba(241, 196, 15, 0.2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dark-mode-toggle:hover {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.3), rgba(241, 196, 15, 0.3));
+            transform: rotate(15deg) scale(1.1);
+        }
+        
+        .dark-mode-toggle i {
+            color: #f39c12;
+            font-size: 1.2rem;
+        }
+        
+        /* Sidebar Footer */
+        .sidebar-footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            padding: 20px;
+            background-color: #34495e;
+        }
+        
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 12px;
+            background-color: #e74c3c;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: #c0392b;
+            color: white;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+            }
+            .sidebar.active {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+            .mobile-toggle {
+                display: block;
+            }
+        }
+        
+        /* Dark Mode */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+        }
+        
+        body.dark-mode .sidebar {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+        }
+        
+        body.dark-mode .sidebar-header {
+            background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+        }
+        
+        body.dark-mode .sidebar-menu a.active {
+            background: linear-gradient(90deg, #B8BEA4 0%, #a0a68d 100%);
+            color: #1a1a2e;
+        }
+        
+        body.dark-mode .sidebar-footer {
+            background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+        }
+        
+        body.dark-mode .logout-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i> Menu
+    </button>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="profile-picture">
+                <i class="bi bi-person-circle"></i>
+            </div>
+            <h4>Admin User</h4>
+            <p class="user-role">Administrator</p>
+        </div>
+        
+        <!-- Dark Mode Toggle -->
+        <div class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+            <i class="bi bi-moon-stars-fill" id="darkModeIcon"></i>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li>
+                <a href="index.html" class="active">
+                    <i class="bi bi-clipboard2-data-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="add-task.html">
+                    <i class="bi bi-plus-lg"></i>
+                    <span>Add Task</span>
+                </a>
+            </li>
+            <li>
+                <a href="todo.html">
+                    <i class="bi bi-pin"></i>
+                    <span>To Do</span>
+                </a>
+            </li>
+            <li>
+                <a href="doing.html">
+                    <i class="bi bi-lightning"></i>
+                    <span>Doing</span>
+                </a>
+            </li>
+            <li>
+                <a href="done.html">
+                    <i class="bi bi-check2-square"></i>
+                    <span>Done</span>
+                </a>
+            </li>
+            <li>
+                <a href="manage-list.html">
+                    <i class="bi bi-folder2-open"></i>
+                    <span>Manage Lists</span>
+                </a>
+            </li>
+            <li>
+                <a href="users.html">
+                    <i class="bi bi-people"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+            <a href="logout.html" class="logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <h1>Navigation Ready!</h1>
+        <p>This is the complete navigation template. Add your page content here.</p>
+        
+        <!-- Demo content -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card text-center p-4" style="background: linear-gradient(135deg, #B8BEA4, #848484); color: #2c3e50;">
+                    <i class="bi bi-clipboard2-data-fill" style="font-size: 3rem;"></i>
+                    <h3>Dashboard</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-4" style="background: linear-gradient(135deg, #3498db, #2980b9); color: white;">
+                    <i class="bi bi-plus-lg" style="font-size: 3rem;"></i>
+                    <h3>Add Task</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-4" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white;">
+                    <i class="bi bi-pin" style="font-size: 3rem;"></i>
+                    <h3>To Do</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-4" style="background: linear-gradient(135deg, #f39c12, #e67e22); color: white;">
+                    <i class="bi bi-lightning" style="font-size: 3rem;"></i>
+                    <h3>Doing</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Navigation Scripts -->
+    <script>
+        // Toggle Sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        
+        // Close sidebar when clicking outside (mobile)
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+            if (window.innerWidth <= 768 && !sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+        
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('darkModeIcon');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('bi-moon-stars-fill');
+                icon.classList.add('bi-sun-fill');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                icon.classList.remove('bi-sun-fill');
+                icon.classList.add('bi-moon-stars-fill');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+        
+        // Load saved dark mode preference
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeIcon').classList.remove('bi-moon-stars-fill');
+                document.getElementById('darkModeIcon').classList.add('bi-sun-fill');
+            }
+        });
+    </script>
+</body>
+</html>

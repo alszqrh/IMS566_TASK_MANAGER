@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - To Do Tasks</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #e3e9dd; }
+        
+        .mobile-toggle {
+            display: none; position: fixed; top: 20px; left: 20px; z-index: 1100;
+            background: #2c3e50; color: white; border: none; padding: 10px 15px;
+            border-radius: 5px; cursor: pointer;
+        }
+        
+        .sidebar {
+            position: fixed; top: 0; left: 0; height: 100vh; width: 250px;
+            background-color: #2c3e50; padding: 20px 0; box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 1000; overflow-y: auto; transition: left 0.3s;
+        }
+        
+        .sidebar-header {
+            padding: 30px 20px; text-align: center; background-color: #1e3a52;
+            margin-bottom: 20px; color: white; font-size: 1.2rem; font-weight: bold;
+        }
+        
+        .sidebar-menu { list-style: none; padding: 0; }
+        .sidebar-menu li { margin: 5px 0; }
+        .sidebar-menu a {
+            display: flex; align-items: center; padding: 15px 25px; color: #ecf0f1;
+            text-decoration: none; transition: all 0.3s; font-size: 1rem;
+        }
+        .sidebar-menu a:hover { background-color: #34495e; padding-left: 30px; color: white; }
+        .sidebar-menu a.active {
+            background-color: #B8BEA4; color: #2c3e50; font-weight: bold;
+            border-left: 4px solid #848484;
+        }
+        .sidebar-menu a .icon { margin-right: 12px; width: 20px; }
+        
+        .sidebar-logout {
+            margin-top: 40px; padding: 20px; background-color: #34495e;
+        }
+        .sidebar-logout a {
+            display: flex; align-items: center; color: white; text-decoration: none;
+            padding: 12px; background: #e74c3c; border-radius: 5px; font-weight: bold;
+            transition: 0.3s;
+        }
+        .sidebar-logout a:hover { background: #c0392b; color: white; }
+        
+        .main-content { margin-left: 250px; padding: 30px; min-height: 100vh; }
+        
+        .btn-custom-sage {
+            background: #B8BEA4; color: #2c3e50; border: none; padding: 10px 20px;
+            border-radius: 5px; font-weight: 600;
+        }
+        .btn-custom-sage:hover { background: #a0a68d; color: #2c3e50; }
+        
+        .btn-custom-yellow {
+            background: #f9ca24; color: #222; border: none;
+        }
+        .btn-custom-yellow:hover { background: #f6e58d; color: #222; }
+        
+        .priority-high { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; }
+        .priority-medium { background: #f39c12; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; }
+        .priority-low { background: #27ae60; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; }
+        
+        .status-to-do { background: rgba(231,76,60,0.2); border: 1px solid #e74c3c; color: #2c3e50; padding: 4px 8px; border-radius: 12px; }
+        .status-doing { background: rgba(52,152,219,0.2); border: 1px solid #3498db; color: #2c3e50; padding: 4px 8px; border-radius: 12px; }
+        .status-done { background: rgba(39,174,96,0.2); border: 1px solid #27ae60; color: #2c3e50; padding: 4px 8px; border-radius: 12px; }
+        
+        @media (max-width: 768px) {
+            .sidebar { left: -250px; }
+            .sidebar.active { left: 0; }
+            .main-content { margin-left: 0; padding: 20px 10px; }
+            .mobile-toggle { display: block; }
+        }
+    </style>
+    
+    <script>
+        function confirmDeleteTask() {
+            return confirm('Are you sure you want to delete this task?');
+        }
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</head>
+
+<body>
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰ Menu</button>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">Task Manager</div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html"><span class="icon"><i class="fas fa-chart-line"></i></span> Dashboard</a></li>
+            
+            <li><a href="list-task.html?status=To%20Do" class="active">
+                <span class="icon"><i class="fas fa-hourglass-start"></i></span> To Do
+            </a></li>
+            <li><a href="list-task.html?status=Doing">
+                <span class="icon"><i class="fas fa-sync-alt"></i></span> Doing
+            </a></li>
+            <li><a href="list-task.html?status=Done">
+                <span class="icon"><i class="fas fa-check-circle"></i></span> Done
+            </a></li>
+            
+            <li><a href="manage-list.html">
+                <span class="icon"><i class="fas fa-list-alt"></i></span> Manage Lists
+            </a></li>
+        </ul>
+        <div class="sidebar-logout">
+            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout (John Doe)</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h1>To Do Tasks</h1>
+            
+            <a href="add-task.html" class="btn mb-3 btn-custom-sage">+ Add New Task</a>
+
+            <!-- Demo success alerts -->
+            <div class="alert alert-success alert-dismissible fade show" style="display:none;" id="successAlert">
+                <i class="fas fa-check-circle"></i> Task updated successfully!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>S.N.</th>
+                            <th>Task Name</th>
+                            <th>Priority</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>5</td>
+                            <td>Complete project documentation</td>
+                            <td><span class="priority-high">High</span></td>
+                            <td>2025-12-15</td>
+                            <td><span class="status-to-do">To Do</span></td>
+                            <td>
+                                <a href="update-task.html" class="btn btn-sm btn-custom-yellow me-1">Update</a>
+                                <a href="#" class="btn btn-sm btn-danger" onclick="return confirmDeleteTask();">Delete</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Review pull requests</td>
+                            <td><span class="priority-medium">Medium</span></td>
+                            <td>2025-12-12</td>
+                            <td><span class="status-to-do">To Do</span></td>
+                            <td>
+                                <a href="update-task.html" class="btn btn-sm btn-custom-yellow me-1">Update</a>
+                                <a href="#" class="btn btn-sm btn-danger" onclick="return confirmDeleteTask();">Delete</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Test new features</td>
+                            <td><span class="priority-low">Low</span></td>
+                            <td>2025-12-20</td>
+                            <td><span class="status-to-do">To Do</span></td>
+                            <td>
+                                <a href="update-task.html" class="btn btn-sm btn-custom-yellow me-1">Update</a>
+                                <a href="#" class="btn btn-sm btn-danger" onclick="return confirmDeleteTask();">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('click', function(event) {
+            var sidebar = document.getElementById('sidebar');
+            var toggle = document.querySelector('.mobile-toggle');
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+    </script>
+
+    <!-- Footer -->
+    <div class="text-center mt-4">
+        <p class="text-muted">© 2025 Task Manager System. All rights reserved.</p>
+    </div>
+</body>
+</html>
